@@ -1,0 +1,393 @@
+<!--&lt;!&ndash;<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">&ndash;&gt;-->
+<!--&lt;!&ndash;<head>&ndash;&gt;-->
+<!--&lt;!&ndash;    <meta charset="utf-8">&ndash;&gt;-->
+<!--&lt;!&ndash;    <title>Event Booking page - Welcome and choose an Event</title>&ndash;&gt;-->
+<!--&lt;!&ndash;    <style type="text/css">&ndash;&gt;-->
+<!--&lt;!&ndash;        body {&ndash;&gt;-->
+<!--&lt;!&ndash;            width: 800px;&ndash;&gt;-->
+<!--&lt;!&ndash;            margin: auto;&ndash;&gt;-->
+<!--&lt;!&ndash;        }&ndash;&gt;-->
+<!--&lt;!&ndash;    </style>&ndash;&gt;-->
+<!--&lt;!&ndash;</head>&ndash;&gt;-->
+<!--&lt;!&ndash;<body>&ndash;&gt;-->
+<!--&lt;!&ndash;<header>&ndash;&gt;-->
+<!--&lt;!&ndash;    <h1>Welcome to our Event Booking App</h1>&ndash;&gt;-->
+<!--&lt;!&ndash;</header>&ndash;&gt;-->
+<!--&lt;!&ndash;<main>&ndash;&gt;-->
+<!--&lt;!&ndash;    <h2>Search for events:</h2>&ndash;&gt;-->
+<!--&lt;!&ndash;    <form th:action="@{/}" th:method="POST">&ndash;&gt;-->
+<!--&lt;!&ndash;        <label for="searchText">Event name contains:</label>&ndash;&gt;-->
+<!--&lt;!&ndash;        <input type="text" id="searchText" name="searchText"><br/><br/>&ndash;&gt;-->
+
+<!--&lt;!&ndash;        <label for="minRating">Minimum rating:</label>&ndash;&gt;-->
+<!--&lt;!&ndash;        <input type="number" id="minRating" name="minRating" min="0" max="10"><br/><br/>&ndash;&gt;-->
+
+<!--&lt;!&ndash;        <input type="submit" value="Search">&ndash;&gt;-->
+<!--&lt;!&ndash;    </form>&ndash;&gt;-->
+
+<!--&lt;!&ndash;    <h2>Choose an event:</h2>&ndash;&gt;-->
+<!--&lt;!&ndash;    <form th:action="@{/eventBooking}" th:method="POST">&ndash;&gt;-->
+<!--&lt;!&ndash;        <div th:each="event : ${events}">&ndash;&gt;-->
+<!--&lt;!&ndash;            <input type="radio" th:value="${event.name}" name="eventName"&ndash;&gt;-->
+<!--&lt;!&ndash;                   th:text="'Name: ' + ${event.name}&ndash;&gt;-->
+<!--&lt;!&ndash;                   + ', Description: ' + ${event.description}&ndash;&gt;-->
+<!--&lt;!&ndash;                   + ', Rating: ' + ${event.popularityScore}&ndash;&gt;-->
+<!--&lt;!&ndash;                   + ', Location: ' + ${event.location.getName()}"/>&ndash;&gt;-->
+<!--&lt;!&ndash;        </div>&ndash;&gt;-->
+<!--&lt;!&ndash;        <h2>Choose number of tickets:</h2>&ndash;&gt;-->
+<!--&lt;!&ndash;        <input type="number" name="numberOfTickets" min="1" max="10"><br/>&ndash;&gt;-->
+<!--&lt;!&ndash;        <br/>&ndash;&gt;-->
+<!--&lt;!&ndash;        <input type="submit" value="Submit">&ndash;&gt;-->
+<!--&lt;!&ndash;    </form>&ndash;&gt;-->
+<!--&lt;!&ndash;</main>&ndash;&gt;-->
+<!--&lt;!&ndash;</body>&ndash;&gt;-->
+<!--&lt;!&ndash;</html>&ndash;&gt;-->
+
+<!--<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8"/>-->
+<!--    <title>Events</title>-->
+<!--    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"-->
+<!--          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">-->
+<!--    <style>-->
+<!--        .center-radio {-->
+<!--            display: flex;-->
+<!--            align-items: normal;-->
+<!--            justify-content: flex-end;-->
+<!--        }-->
+
+<!--        .event-actions {-->
+<!--            display: flex;-->
+<!--            justify-content: flex-start; /* Align buttons to the left */-->
+<!--            margin-bottom: 15px; /* Add spacing between each action block */-->
+<!--        }-->
+
+<!--        .event-actions > div {-->
+<!--            margin-right: 10px; /* Add space between buttons */-->
+<!--        }-->
+
+<!--        table {-->
+<!--            margin-bottom: 30px; /* Add space between the table and buttons */-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--<section class="jumbotron text-center">-->
+<!--    <div class="container">-->
+<!--        <h1 class="jumbotron-heading">EVENT BOOKING APP</h1>-->
+<!--    </div>-->
+<!--</section>-->
+<!--<main>-->
+
+<!--    <div class="container mt-4">-->
+<!--        <section>-->
+<!--            <h2>Search for Events</h2>-->
+<!--            <form th:action="@{/events}" th:method="POST">-->
+<!--                <div class="form-group">-->
+<!--                    <label for="searchText">Event name contains:</label>-->
+<!--                    <input type="text" id="searchText" name="searchText" class="form-control"-->
+<!--                           placeholder="Enter event name">-->
+<!--                </div>-->
+<!--                <div class="form-group">-->
+<!--                    <label for="minRating">Minimum Rating:</label>-->
+<!--                    <input type="number" id="minRating" name="minRating" class="form-control" min="0" max="10"-->
+<!--                           placeholder="Enter minimum rating">-->
+<!--                </div>-->
+<!--                <button type="submit" class="btn btn-primary">Search</button>-->
+<!--            </form>-->
+<!--        </section>-->
+
+<!--        &lt;!&ndash; Error Message Display &ndash;&gt;-->
+<!--        <div th:if="${hasError}">-->
+<!--            <div class="alert alert-danger">-->
+<!--                <p th:text="${error}"></p>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--        <section>-->
+<!--            <h2>Choose an Event</h2>-->
+<!--            <form th:action="@{/eventBooking}" th:method="POST">-->
+<!--                <table class="table table-striped">-->
+<!--                    <thead>-->
+<!--                    <tr>-->
+<!--                        <th scope="col"></th>-->
+<!--                        <th scope="col">Event Name</th>-->
+<!--                        <th scope="col">Description</th>-->
+<!--                        <th scope="col">Popularity Score</th>-->
+<!--                        <th scope="col">Location</th>-->
+<!--                        <th scope="col">Actions</th>-->
+<!--                    </tr>-->
+<!--                    </thead>-->
+
+<!--                    <tbody>-->
+<!--                    <tr th:each="event : ${events}">-->
+<!--                        <td class="center-radio">-->
+<!--                            <input type="radio" class="form-check-input event-radio" th:value="${event.name}"-->
+<!--                                   name="eventName" required="required"/>-->
+<!--                            &lt;!&ndash;                                   id="event_${event.id}"&ndash;&gt;-->
+<!--                            &lt;!&ndash;                            />&ndash;&gt;-->
+<!--                        </td>-->
+<!--                        <td th:text="${event.name}"></td>-->
+<!--                        <td th:text="${event.description}"></td>-->
+<!--                        <td th:text="${event.popularityScore}"></td>-->
+<!--                        <td th:text="${event.location.getName()}"></td>-->
+<!--                        <td>-->
+<!--                            &lt;!&ndash; Edit Button &ndash;&gt;-->
+<!--                            <a th:href="@{/events/edit-form/{id}(id=${event.getId()})}" class="btn btn-info btn-sm">-->
+<!--                                Edit-->
+<!--                            </a>-->
+<!--                            &lt;!&ndash; Delete Button &ndash;&gt;-->
+<!--&lt;!&ndash;                            <form th:action="@{/events/delete/{id}(id=${event.getId()})}" method="POST"&ndash;&gt;-->
+<!--&lt;!&ndash;                                  class="d-inline-block">&ndash;&gt;-->
+<!--&lt;!&ndash;                                <input type="hidden" name="_method" value="DELETE"> &lt;!&ndash; This simulates DELETE &ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;                                <button type="submit" class="btn btn-danger btn-sm">&ndash;&gt;-->
+<!--&lt;!&ndash;                                    Delete&ndash;&gt;-->
+<!--&lt;!&ndash;                                </button>&ndash;&gt;-->
+<!--&lt;!&ndash;                            </form>&ndash;&gt;-->
+<!--                        </td>-->
+<!--                    </tr>-->
+<!--                    </tbody>-->
+
+<!--                </table>-->
+<!--                &lt;!&ndash;            <form th:action="@{/eventBooking}" th:method="POST">&ndash;&gt;-->
+<!--                <h3>Choose Number of Tickets</h3>-->
+<!--                &lt;!&ndash;                <input type="hidden" name="eventName">&ndash;&gt;-->
+<!--                <input type="number" name="numberOfTickets" class="form-control" min="1" max="10"-->
+<!--                       placeholder="Enter number of tickets" required="">-->
+<!--                <button type="submit" class="btn btn-primary mt-3">Submit</button>-->
+<!--            </form>-->
+<!--            &lt;!&ndash;                Edit Button&ndash;&gt;-->
+<!--            &lt;!&ndash;            <a th:href="@{/events/edit-form/{id}(id=${event.getId()})}" class="btn btn-info btn-sm">&ndash;&gt;-->
+<!--            &lt;!&ndash;                Edit&ndash;&gt;-->
+<!--            &lt;!&ndash;            </a>&ndash;&gt;-->
+<!--            &lt;!&ndash;            &lt;!&ndash; Delete Button &ndash;&gt;&ndash;&gt;-->
+<!--            &lt;!&ndash;            <form th:action="@{/events/delete/{id}(id=${event.getId()})}" method="POST"&ndash;&gt;-->
+<!--            &lt;!&ndash;                  class="d-inline-block">&ndash;&gt;-->
+<!--            &lt;!&ndash;                <input type="hidden" name="_method" value="DELETE"> &lt;!&ndash; This simulates DELETE &ndash;&gt;&ndash;&gt;-->
+<!--            &lt;!&ndash;                <button type="submit" class="btn btn-danger btn-sm">&ndash;&gt;-->
+<!--            &lt;!&ndash;                    Delete&ndash;&gt;-->
+<!--            &lt;!&ndash;                </button>&ndash;&gt;-->
+<!--            &lt;!&ndash;                &lt;!&ndash;                            </section>&ndash;&gt;&ndash;&gt;-->
+<!--            &lt;!&ndash;            </form>&ndash;&gt;-->
+<!--            &lt;!&ndash;            </form>&ndash;&gt;-->
+<!--        </section>-->
+
+<!--        &lt;!&ndash; Add Event Button &ndash;&gt;-->
+<!--        <section>-->
+<!--            <a href="/events/add-form" class="btn btn-dark">Add New Event</a>-->
+<!--        </section>-->
+<!--    </div>-->
+<!--</main>-->
+
+<!--&lt;!&ndash;<script>&ndash;&gt;-->
+<!--&lt;!&ndash;    const radioButtons = document.querySelectorAll('.event-radio');&ndash;&gt;-->
+<!--&lt;!&ndash;    const hiddenInput = document.querySelector('input[name="eventName"]');&ndash;&gt;-->
+
+<!--&lt;!&ndash;    radioButtons.forEach(radio => {&ndash;&gt;-->
+<!--&lt;!&ndash;        radio.addEventListener('change', function () {&ndash;&gt;-->
+<!--&lt;!&ndash;            hiddenInput.value = this.value;&ndash;&gt;-->
+<!--&lt;!&ndash;        });&ndash;&gt;-->
+<!--&lt;!&ndash;    });&ndash;&gt;-->
+<!--&lt;!&ndash;</script>&ndash;&gt;-->
+
+
+<!--<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"-->
+<!--        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"-->
+<!--        crossorigin="anonymous"></script>-->
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"-->
+<!--        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"-->
+<!--        crossorigin="anonymous"></script>-->
+<!--<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"-->
+<!--        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"-->
+<!--        crossorigin="anonymous"></script>-->
+<!--</body>-->
+<!--</html>-->
+
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Events</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const radioButtons = document.querySelectorAll('.event-radio');
+            const hiddenInput = document.getElementById('eventName');
+
+            radioButtons.forEach(radio => {
+                radio.addEventListener('change', function () {
+                    hiddenInput.value = this.value;
+                    // console.log("Hidden input value:", hiddenInput.value);
+                });
+            });
+        });
+
+        // function disableButton(button) {
+        //     button.disabled = true;
+        // }
+
+        // function incrementEvent(button) {
+        //     document.getElementById('incrementBtn').disabled = true;
+        //     document.getElementById('decrementBtn').disabled = true;
+        // }
+        //
+        // function decrementEvent(button) {
+        //     document.getElementById('incrementBtn').disabled = true;
+        //     document.getElementById('decrementBtn').disabled = true;
+        // }
+    </script>
+
+    </script>
+    <style>
+        .center-radio {
+            display: flex;
+            align-items: normal;
+            justify-content: flex-end;
+        }
+
+        .event-actions {
+            display: flex;
+            justify-content: flex-start; /* Align buttons to the left */
+            margin-bottom: 15px; /* Add spacing between each action block */
+        }
+
+        .event-actions > div {
+            margin-right: 10px; /* Add space between buttons */
+        }
+
+        table {
+            margin-bottom: 30px; /* Add space between the table and buttons */
+        }
+    </style>
+</head>
+<body>
+
+<section class="jumbotron text-center">
+    <div class="container">
+        <h1 class="jumbotron-heading">EVENT BOOKING APP</h1>
+    </div>
+</section>
+<main>
+
+    <div class="container mt-4">
+        <section>
+            <h2>Search for Events</h2>
+            <form th:action="@{/events}" th:method="POST">
+                <div class="form-group">
+                    <label for="searchText">Event name contains:</label>
+                    <input type="text" id="searchText" name="searchText" class="form-control"
+                           placeholder="Enter event name">
+                </div>
+                <div class="form-group">
+                    <label for="minRating">Minimum Rating:</label>
+                    <input type="number" id="minRating" name="minRating" class="form-control" min="0" max="10"
+                           placeholder="Enter minimum rating">
+                </div>
+                <button type="submit" class="btn btn-primary">Search</button>
+            </form>
+        </section>
+        <br/>
+
+        <section>
+            <h2>Filter by Location</h2>
+            <form th:action="@{/events}" th:method="GET">
+                <div class="form-group">
+                    <select name="locationId" class="form-control">
+                        <option value="">All Locations</option>
+                        <option th:each="loc : ${locations}"
+                                th:value="${loc.id}"
+                                th:text="${loc.name}">
+                        </option>
+                    </select>
+                </div>
+                    <button type="submit" class="btn btn-primary">Filter</button>
+            </form>
+        </section>
+
+
+        <div th:if="${hasError}">
+            <div class="alert alert-danger">
+                <p th:text="${error}"></p>
+            </div>
+        </div>
+
+        <section>
+            <h2>Choose an Event</h2>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th scope="col"></th>
+                    <th scope="col">Event Name</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Popularity Score</th>
+                    <th scope="col">Location</th>
+                    <th scope="col">Actions</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr th:each="event : ${events}">
+                    <td class="center-radio">
+                        <input type="radio" class="form-check-input event-radio" th:value="${event.name}"
+                               name="eventName" id="event_${event.getId()}"/>
+                    </td>
+                    <td th:text="${event.getName()}"></td>
+                    <td th:text="${event.getDescription()}"></td>
+                    <td th:text="${event.getPopularityScore()}"></td>
+                    <td th:text="${event.getLocation() != null}
+                            ? ${event.getLocation().getName()} : 'No Location'"></td>
+                    <td>
+                        <a th:href="@{/events/edit-form/{id}(id=${event.getId()})}" class="btn btn-info btn-sm">
+                            Edit
+                        </a>
+                        <form th:action="@{/events/delete/{id}(id=${event.getId()})}" method="POST"
+                              class="d-inline-block">
+                            <input type="hidden" name="_method" value="DELETE">
+                            <button type="submit" class="btn btn-danger btn-sm">
+                                Delete
+                            </button>
+                        </form>
+                        <div th:if="${event.isDisabled} == false">
+                            <form th:action="@{/events/increment/{id}(id=${event.getId()})}" method="post">
+                                <button type="submit" class="btn btn-success btn-sm">Increment</button>
+                            </form>
+                            <form th:action="@{/events/decrement/{id}(id=${event.getId()})}" method="post">
+                                <button type="submit" class="btn btn-danger btn-sm">Decrement</button>
+                            </form>
+                        </div>
+                        <div th:if="${event.isDisabled} == true"></div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <section>
+                <a href="/events/add-form" class="btn btn-dark">Add New Event</a>
+            </section>
+            <br/><br/>
+            <form th:action="@{/eventBooking}" th:method="POST">
+                <h3>Choose Number of Tickets</h3>
+                <input type="hidden" name="eventName" id="eventName">
+                <input type="number" name="numberOfTickets" class="form-control" min="1" max="10"
+                       placeholder="Enter number of tickets" required="">
+                <button type="submit" class="btn btn-primary mt-3">Submit</button>
+            </form>
+        </section>
+
+    </div>
+</main>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+</body>
+</html>

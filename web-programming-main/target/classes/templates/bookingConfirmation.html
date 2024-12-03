@@ -1,0 +1,114 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>Booking - Confirmation</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/e59232f0a1.js" crossorigin="anonymous"></script>
+    <style type="text/css">
+/*<!--        body {-->*/
+/*<!--            width: 800px;-->*/
+/*<!--            margin: auto;-->*/
+/*<!--        }-->*/
+
+/*<!--        table {-->*/
+/*<!--            width: 100%;-->*/
+/*<!--        }-->*/
+
+        table, td, th {
+            border: 1px solid black;
+            padding: 3px 2px;
+        }
+    </style>
+</head>
+<body>
+<main>
+    <section class="jumbotron text-center">
+        <div class="container">
+            <h1 class="jumbotron-heading">Event Booking page - Booking confirmation</h1>
+        </div>
+    </section>
+    <div class="container mt-4">
+        <section>
+<!--            <table class="table table-striped" th:if="${bookings}" th:each="booking : ${bookings}">-->
+<!--                <tr>-->
+<!--                    <th colspan="2" >Your Booking Status</th>-->
+<!--                </tr>-->
+<!--                <tr>-->
+<!--                    <td><b>Attendee Name </b></td>-->
+<!--                    <td th:text="${booking.getAttendeeName()}"></td>-->
+<!--                </tr>-->
+<!--                <tr>-->
+<!--                    <td><b>Client IP Address</b></td>-->
+<!--                    <td th:text="${booking.getAttendeeAddress()}"></td>-->
+<!--                </tr>-->
+<!--                <tr>-->
+<!--                    <td><b>Booking for Event</b></td>-->
+<!--                    <td th:text="${booking.getEventName()}"></td>-->
+<!--                </tr>-->
+<!--                <tr>-->
+<!--                    <td><b>Number of tickets</b></td>-->
+<!--                    <td th:text="${booking.getNumberOfTickets()}"></td>-->
+<!--                </tr>-->
+<!--            </table>-->
+<!--            <br/>-->
+<!--            <div th:if="${bookings.size() == 0}">-->
+<!--                <h3>No booking has been made yet. Please select an event and proceed with your booking.</h3>-->
+<!--            </div>-->
+<!--            <br/>-->
+<!--            <div th:if="${eventBookings != null}">-->
+<!--                <h2>Search Results</h2>-->
+<!--                <table>-->
+<!--                    <tr>-->
+<!--                        <th>Attendee Name</th>-->
+<!--                        <th>Client IP Address</th>-->
+<!--                        <th>Event Name</th>-->
+<!--                        <th>Number of Tickets</th>-->
+<!--                    </tr>-->
+<!--                    <tr th:each="searchResult : ${eventBookings}">-->
+<!--                        <td th:text="${searchResult.attendeeName}">Attendee Name</td>-->
+<!--                        <td th:text="${searchResult.attendeeAddress}">Client IP Address</td>-->
+<!--                        <td th:text="${searchResult.eventName}">Event Name</td>-->
+<!--                        <td th:text="${searchResult.numberOfTickets}">Number of Tickets</td>-->
+<!--                    </tr>-->
+<!--                </table>-->
+<!--            </div>-->
+
+            <table class="table table-striped" th:if="${bookings}">
+                <thead>
+                <tr>
+                    <th scope="col">Attendee Name</th>
+                    <th scope="col">Client IP Address</th>
+                    <th scope="col">Booking for Event</th>
+                    <th scope="col">Number of Tickets</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="booking : ${bookings}">
+                    <td th:text="${booking.getAttendeeName()}">Attendee Name</td>
+                    <td th:text="${booking.getAttendeeAddress()}">Client IP Address</td>
+                    <td th:text="${booking.getEventName()}">Event Name</td>
+                    <td th:text="${booking.getNumberOfTickets()}">Number of Tickets</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <br/>
+            <div th:if="${bookings.size() == 0}">
+                <h3>No booking has been made yet. Please select an event and proceed with your booking.</h3>
+            </div>
+        </section>
+        <a type="button" class="btn btn-primary" href="/events">Back</a>
+    </div>
+</main>
+</body>
+</html>
